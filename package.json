@@ -13,8 +13,7 @@
 		"lint:prettier": "prettier --check \"**/*.{js,jsx,json,ts,tsx,md,mdx,yml,yaml}\"",
 		"format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,mdx}\"",
 		"setup": "yarn install && yarn build",
-		"deploy": "yarn build && firebase deploy --token \"YOUR_CI_TOKEN\""
-		// Remember to replace "YOUR_CI_TOKEN" with your actual Firebase CI token
+		"deploy": "yarn build && firebase deploy"
 	},
 	"dependencies": {
 		"@ag.ds-next/react": "^1.7.0",
