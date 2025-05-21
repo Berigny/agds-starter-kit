@@ -13,7 +13,6 @@ Before you start, ensure:
 ```
 bash
   npm install -g firebase-tools
-  
 ```
 - ✅ You have a Firebase project created in [Firebase Console](https://console.firebase.google.com/)
 - ✅ You are in the root directory of the `agds-starter-kit` project
@@ -21,6 +20,8 @@ bash
 ---
 
 ## ✅ Step 1: Install Dependencies
+
+*This step is now part of the `yarn setup` script, but you can run it individually if needed.*
 ```
 bash
 yarn install
@@ -43,12 +44,12 @@ module.exports = nextConfig;
 ```
 ---
 
-## ✅ Step 3: Build the Application
+## ✅ Step 3: Setup and Build the Application
 
-Generates a static export in the `out/` directory:
+This step installs dependencies and generates a static export in the `out/` directory using the `setup` script in `package.json`.
 ```
 bash
-yarn build
+yarn setup
 ```
 ---
 
@@ -68,11 +69,19 @@ firebase init
 ---
 
 ## ✅ Step 5: Deploy to Firebase Hosting
+
+Deploy the application to Firebase Hosting using the `deploy` script in `package.json`.
+
+For **manual deployments**, use the script with your Firebase CI token:
 ```
 bash
-firebase deploy
+yarn deploy
 ```
-You’ll get a live URL like:
+> 💡 **Note:** Replace `"YOUR_CI_TOKEN"` in the `deploy` script within `package.json` with your actual Firebase CI token obtained by running `firebase login:ci`.
+
+For **automated deployments** with GitHub Actions, a Firebase Service Account Key is used (see Step 7).
+
+Upon successful deployment, you’ll get a live URL like:
 ```
 https://your-project-id.web.app
 ```
@@ -97,6 +106,8 @@ http://localhost:6006/
 
 ## ⚙️ Step 7: GitHub Actions for CI/CD (Firebase Hosting)
 
+To automate the build and deployment process whenever you push changes to your `main` branch, we will set up a GitHub Actions workflow that uses a Firebase Service Account for authentication.
+
 ### ✅ Create the Workflow File
 
 From your terminal:
@@ -105,7 +116,7 @@ bash
 mkdir -p .github/workflows
 touch .github/workflows/firebase_hosting_deploy.yml
 ```
-Paste this into `firebase_hosting_deploy.yml`:
+Paste this into `.github/workflows/firebase_hosting_deploy.yml`. This workflow uses the `yarn build` script you configured and deploys using the `FirebaseExtended/action-hosting-deploy` action, authenticating with a Firebase Service Account secret you will add to your GitHub repository.
 ```
 yaml
 name: Deploy to Firebase Hosting
@@ -133,53 +144,59 @@ jobs:
         run: yarn install
 
       - name: Build Project
-        run: yarn build
+        run: yarn build # Uses the 'build' script which includes 'next export'
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGDS_460306 }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGDS_460306 }}' # Authenticates with the service account secret
           channelId: live
-          projectId: your-firebase-project-id
+          projectId: your-firebase-project-id # Remember to replace with your Firebase project ID
 ```
 ---
 
 ### ✅ Obtain Firebase Service Account Key
 
+To allow GitHub Actions to deploy to your Firebase project, you need to create a service account with the necessary permissions and obtain its key.
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Navigate to **IAM & Admin > Service Accounts**
-3. Create or select a service account with **Firebase Hosting Admin** role
-4. Click **"Create Key"** → Choose **JSON**
-5. Download the key
+3. Create or select a service account with the **Firebase Hosting Admin** role. This role grants permissions to deploy to Firebase Hosting.
+4. Click on the service account, then click **\"Keys\"** and **\"Add Key\"** → **\"Create New Key\"** → Choose **JSON** as the key type.
+5. Click **\"Create\"**. This will download a JSON file containing your service account key.
 
 ---
 
 ### ✅ Add Service Account to GitHub Secrets
 
+To securely use your service account key in the GitHub Actions workflow, you will add it as a secret in your GitHub repository. The workflow file is configured to use a secret named `FIREBASE_SERVICE_ACCOUNT_AGDS_460306`.
+
 In your GitHub repo:
 
-1. Go to **Settings → Secrets → Actions**
-2. Click **"New repository secret"**
+1. Go to **Settings → Secrets and variables → Actions**
+2. Click **\"New repository secret\"**
    - Name: `FIREBASE_SERVICE_ACCOUNT_AGDS_460306`
-   - Value: *(Paste the full JSON content from your downloaded key)*
+   - Value: *(Open the downloaded JSON key file and paste the entire content here)*
 
 ---
 
 ### ✅ Commit & Push
 
-Push your changes to `main`:
+Commit the changes to your workflow file and push them to your `main` branch:
 ```
 bash
-git add .
+git add .github/workflows/firebase_hosting_deploy.yml
 git commit -m "Add Firebase CI/CD workflow"
 git push origin main
 ```
+This push will trigger the GitHub Actions workflow.
+
 ---
 
 ### ✅ Monitor Deployment
 
-Check the **Actions** tab in your GitHub repository to see your build and deploy progress.
+Check the **Actions** tab in your GitHub repository to see your build and deploy progress. If the workflow runs successfully, your application will be deployed to Firebase Hosting.
 
 ---
 

@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
-	output: 'export',        // Static HTML export
-	trailingSlash: true      // Optional: helps with Firebase routing
+	output: 'export', // Enables static HTML export
 };
 
 module.exports = nextConfig;

@@ -4,14 +4,17 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build",
+		"build": "next build && next export",
 		"start": "next start",
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
 		"lint": "lint:app && lint:prettier",
 		"lint:app": "next lint",
 		"lint:prettier": "prettier --check \"**/*.{js,jsx,json,ts,tsx,md,mdx,yml,yaml}\"",
-		"format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,mdx}\""
+		"format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,mdx}\"",
+		"setup": "yarn install && yarn build",
+		"deploy": "yarn build && firebase deploy --token \"YOUR_CI_TOKEN\""
+		// Remember to replace "YOUR_CI_TOKEN" with your actual Firebase CI token
 	},
 	"dependencies": {
 		"@ag.ds-next/react": "^1.7.0",
@@ -23,7 +26,7 @@
 		"storybook-addon-next-router": "^4.0.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.20.5",
+		"@babel/core": "^7.2.5",
 		"@babel/preset-env": "^7.16.5",
 		"@emotion/babel-plugin": "^11.7.2",
 		"@emotion/babel-preset-css-prop": "^11.2.0",
