@@ -4,61 +4,69 @@ This guide provides step-by-step instructions to set up the [AgDS Starter Kit](h
 
 ---
 
-## 🧱 Prerequisites
+## Phase 1: Environment Setup (Manual)
 
-Before you start, ensure:
+These steps are prerequisites for working with the project and require manual installation on your system.
 
-- ✅ Node.js and Yarn are installed
-- ✅ Firebase CLI is installed
-```
-bash
-  npm install -g firebase-tools
-```
-- ✅ You have a Firebase project created in [Firebase Console](https://console.firebase.google.com/)
-- ✅ You are in the root directory of the `agds-starter-kit` project
+### ✅ Step 1.1: Install Node.js and Yarn
+
+Ensure you have Node.js and Yarn installed on your machine. Refer to their official documentation for installation instructions:
+
+- [Node.js Installation](https://nodejs.org/)
+- [Yarn Installation](https://yarnpkg.com/)
+
+### ✅ Step 1.2: Install Firebase CLI
+
+Install the Firebase Command Line Interface globally:
+
+
+npm install -g firebase-tools
+
+### ✅ Step 1.3: Create Firebase Project
+
+Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/). You will need the project ID for later steps.
 
 ---
 
-## ✅ Step 1: Install Dependencies
+## Phase 2: Project Setup (Manual & AI Assisted)
 
-*This step is now part of the `yarn setup` script, but you can run it individually if needed.*
-```
-bash
-yarn install
-```
----
+This phase involves getting the project ready in your local environment.
 
-## ✅ Step 2: Configure Next.js for Static Export
+### ✅ Step 2.1 (Manual): Clone and Navigate
 
-Edit `next.config.js`:
-```
-js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  output: 'export', // Enables static HTML export
-};
+Clone the `agds-starter-kit` repository and navigate to the project's root directory in your terminal.
+
+
+git clone https://github.com/your-username/agds-starter-kit.git cd agds-starter-kit
+
+### ✅ Step 2.2 (AI Assisted - `yarn setup`)
+
+Install project dependencies and build the application. You can request the AI assistant to run this command.
+
+
+yarn setup
+
+*AI Assistant Command: Request the assistant to run `yarn setup`.*
+
+### ✅ Step 2.3 (Manual): Configure Next.js for Static Export
+
+Verify that `next.config.js` is configured for static export. The provided starter kit should already have this configured:
+
+
+js /** @type {import('next').NextConfig} */ const nextConfig = { reactStrictMode: true, swcMinify: true, output: 'export', // Enables static HTML export };
 
 module.exports = nextConfig;
-```
----
 
-## ✅ Step 3: Setup and Build the Application
+### ✅ Step 2.4 (Manual/AI Assisted - `firebase init`)
 
-This step installs dependencies and generates a static export in the `out/` directory using the `setup` script in `package.json`.
-```
-bash
-yarn setup
-```
----
+Initialize Firebase Hosting for your project. This is an interactive process.
 
-## ✅ Step 4: Initialize Firebase Hosting
-```
-bash
+
 firebase init
-```
-**When prompted:**
+
+*AI Assisted Option: Request the assistant to run `firebase init`. Be prepared to provide input when prompted in the terminal.* Remember the AI assistant can only input text, not make selections.
+
+**When prompted during `firebase init`:**
 
 - Select **Hosting**
 - Choose **Use existing project** and pick your Firebase project
@@ -68,139 +76,135 @@ firebase init
 
 ---
 
-## ✅ Step 5: Deploy to Firebase Hosting
+## Phase 3: Deployment (Manual & AI Assisted)
 
-Deploy the application to Firebase Hosting using the `deploy` script in `package.json`.
+Deploy your built application to Firebase Hosting.
 
-For **manual deployments**, use the script with your Firebase CI token:
-```
-bash
-yarn deploy
-```
-> 💡 **Note:** Replace `"YOUR_CI_TOKEN"` in the `deploy` script within `package.json` with your actual Firebase CI token obtained by running `firebase login:ci`.
+### ✅ Step 3.1 (Manual/AI Assisted - `firebase login:ci`)
 
-For **automated deployments** with GitHub Actions, a Firebase Service Account Key is used (see Step 7).
+Obtain a Firebase CI token. This token is used for manual deployments in non-interactive environments.
+
+
+firebase login:ci
+
+*AI Assisted Option: Request the assistant to run `firebase login:ci`. Follow the instructions in the terminal to authorize the token in your browser and then provide the token to the assistant.* Remember the AI assistant can only input text, not make selections or open browsers.
+
+### ✅ Step 3.2 (AI Assisted - `yarn deploy`)
+
+Deploy the application using the `deploy` script.
+
+For **manual deployments** requiring a token (e.g., in a CI environment where you haven't set up a service account yet), run the script and provide the token:
+
+
+yarn deploy --token "YOUR_CI_TOKEN"
+
+*AI Assisted Command: Request the assistant to run `yarn deploy --token "YOUR_CI_TOKEN"`. Replace "YOUR_CI_TOKEN" with the token obtained in Step 3.1.*
+
+For **automated deployments** with GitHub Actions, a Firebase Service Account Key is used (see Phase 5).
 
 Upon successful deployment, you’ll get a live URL like:
-```
+
+
 https://your-project-id.web.app
-```
+
 ---
 
-## ✅ Step 6: Run Storybook Locally
+## Phase 4: Storybook (AI Assisted)
 
-Ensure Storybook dependencies are installed (they are by default in AgDS Starter Kit).
+Run Storybook locally to develop and test your UI components in isolation.
 
-Start the Storybook server:
-```
-bash
+### ✅ Step 4.1 (AI Assisted - `yarn storybook`)
+
+Start the Storybook server.
+
+
 yarn storybook
-```
+
+*AI Assisted Command: Request the assistant to run `yarn storybook`. Note that this is a long-running task.*
+
 Then open your browser to:
-```
+
+
 http://localhost:6006/
-```
+
 > 💡 Note: In remote environments (like GitHub Codespaces or cloud IDEs), this URL might redirect to a network address. Always check the terminal output.
 
 ---
 
-## ⚙️ Step 7: GitHub Actions for CI/CD (Firebase Hosting)
+## Phase 5: Automated CI/CD with GitHub Actions (Manual & AI Assisted)
 
-To automate the build and deployment process whenever you push changes to your `main` branch, we will set up a GitHub Actions workflow that uses a Firebase Service Account for authentication.
+Automate the build and deployment process whenever you push changes to your `main` branch using GitHub Actions and a Firebase Service Account for secure authentication.
 
-### ✅ Create the Workflow File
+### ✅ Step 5.1 (Manual): Create the Workflow File
 
-From your terminal:
-```
-bash
-mkdir -p .github/workflows
-touch .github/workflows/firebase_hosting_deploy.yml
-```
-Paste this into `.github/workflows/firebase_hosting_deploy.yml`. This workflow uses the `yarn build` script you configured and deploys using the `FirebaseExtended/action-hosting-deploy` action, authenticating with a Firebase Service Account secret you will add to your GitHub repository.
-```
-yaml
-name: Deploy to Firebase Hosting
+Create the GitHub Actions workflow file and paste the provided content. Make sure to replace `your-firebase-project-id` with your actual Firebase project ID.
 
-on:
-  push:
-    branches:
-      - main
 
-jobs:
-  deploy:
-    name: Build & Deploy to Firebase
-    runs-on: ubuntu-latest
+mkdir -p .github/workflows touch .github/workflows/firebase_hosting_deploy.yml
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+Paste this content into `.github/workflows/firebase_hosting_deploy.yml`:
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
 
-      - name: Install Dependencies
-        run: yarn install
+yaml name: Deploy to Firebase Hosting
 
-      - name: Build Project
-        run: yarn build # Uses the 'build' script which includes 'next export'
+on: push: branches: - main
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGDS_460306 }}' # Authenticates with the service account secret
-          channelId: live
-          projectId: your-firebase-project-id # Remember to replace with your Firebase project ID
-```
----
+jobs: deploy: name: Build & Deploy to Firebase runs-on: ubuntu-latest
 
-### ✅ Obtain Firebase Service Account Key
+steps:
+  - name: Checkout Code
+    uses: actions/checkout@v3
 
-To allow GitHub Actions to deploy to your Firebase project, you need to create a service account with the necessary permissions and obtain its key.
+  - name: Set up Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: 18
+
+  - name: Install Dependencies
+    run: yarn install
+
+  - name: Build Project
+    run: yarn build
+
+  - name: Deploy to Firebase Hosting
+    uses: FirebaseExtended/action-hosting-deploy@v0
+    with:
+      repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGDS_460306 }}'
+      channelId: live
+      projectId: your-firebase-project-id # Remember to replace with your Firebase project ID
+
+
+### ✅ Step 5.2 (Manual): Obtain Firebase Service Account Key
+
+Obtain a JSON service account key from the Google Cloud Console with the **Firebase Hosting Admin** role.
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Navigate to **IAM & Admin > Service Accounts**
-3. Create or select a service account with the **Firebase Hosting Admin** role. This role grants permissions to deploy to Firebase Hosting.
-4. Click on the service account, then click **\"Keys\"** and **\"Add Key\"** → **\"Create New Key\"** → Choose **JSON** as the key type.
-5. Click **\"Create\"**. This will download a JSON file containing your service account key.
+3. Create or select a service account with the **Firebase Hosting Admin** role.
+4. Create and download a JSON key for the service account.
 
----
+### ✅ Step 5.3 (Manual): Add Service Account to GitHub Secrets
 
-### ✅ Add Service Account to GitHub Secrets
+Add the content of the downloaded JSON service account key as a secret in your GitHub repository. The secret name should be `FIREBASE_SERVICE_ACCOUNT_AGDS_460306`.
 
-To securely use your service account key in the GitHub Actions workflow, you will add it as a secret in your GitHub repository. The workflow file is configured to use a secret named `FIREBASE_SERVICE_ACCOUNT_AGDS_460306`.
+In your GitHub repo, go to **Settings → Secrets and variables → Actions** and click **"New repository secret"**.
 
-In your GitHub repo:
+### ✅ Step 5.4 (AI Assisted - Git commands)
 
-1. Go to **Settings → Secrets and variables → Actions**
-2. Click **\"New repository secret\"**
-   - Name: `FIREBASE_SERVICE_ACCOUNT_AGDS_460306`
-   - Value: *(Open the downloaded JSON key file and paste the entire content here)*
+Commit the changes to your workflow file and push them to your `main` branch to trigger the GitHub Actions workflow.
 
----
+*AI Assisted Command: Request the assistant to run `git add .`, `git commit -m "Your commit message"`, and `git push origin main`.*
 
-### ✅ Commit & Push
+### ✅ Step 5.5 (Manual): Monitor Deployment
 
-Commit the changes to your workflow file and push them to your `main` branch:
-```
-bash
-git add .github/workflows/firebase_hosting_deploy.yml
-git commit -m "Add Firebase CI/CD workflow"
-git push origin main
-```
-This push will trigger the GitHub Actions workflow.
-
----
-
-### ✅ Monitor Deployment
-
-Check the **Actions** tab in your GitHub repository to see your build and deploy progress. If the workflow runs successfully, your application will be deployed to Firebase Hosting.
+Check the **Actions** tab in your GitHub repository (e.g., `https://github.com/your-username/your-repo-name/actions`) to see your build and deploy progress.
 
 ---
 
 ## ✅ Summary
+
+A summary of the features configured:
 
 | Feature                     | Status         |
 |----------------------------|----------------|
