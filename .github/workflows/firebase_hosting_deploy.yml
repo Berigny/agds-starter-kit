@@ -31,4 +31,4 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AGDS_460306 }}'
           channelId: live
-          projectId: your-firebase-project-id # Make sure to replace with your actual Firebase project ID
+          projectId: agds-460306 # Make sure to replace with your actual Firebase project ID
