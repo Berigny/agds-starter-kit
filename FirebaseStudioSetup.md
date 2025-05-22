@@ -17,7 +17,8 @@ Ensure you have Node.js and Yarn installed on your machine. Refer to their offic
 
 ### ✅ Step 1.2: Install Firebase CLI
 
-Install the Firebase Command Line Interface globally:
+Install the Firebase Command Line Interface globally. This step is AI Assisted.
+
 
 
 npm install -g firebase-tools
